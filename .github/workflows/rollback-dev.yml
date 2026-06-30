@@ -1,0 +1,28 @@
+name: Rollback on dev (Staging)
+
+on:
+  workflow-dispatch:
+
+jobs:
+    deploy-dev:
+      runs-on: ubuntu-latest
+      environment: staging
+
+
+      steps:
+       - name: Checkout repo
+         uses: actions/checkout@v4
+      
+       - name: Setup Node
+         uses: actions/setup-node@v4
+         with:
+           node-version: 24.x
+    
+       - name: Install dependecies
+         run: yarn install
+      
+      
+       - name: Run migrations (staging)
+         run: node scripts/migrate-down
+         env:
+           DB_URL: ${{ secrets.DB_URL }}
